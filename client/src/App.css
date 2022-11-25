@@ -30,6 +30,24 @@ input {
   font-size: 1rem;
 }
 
+input.error {
+  border: 1px solid #c92727;
+  position: relative;
+}
+p.header.error {
+  color: #c92727;
+}
+p.warning {
+  margin: 0;
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  display: none;
+}
+p.warning.error {
+  display: block;
+  color: #c92727;
+}
+
 p.header {
   text-align: left;
   font-size: large;
@@ -99,6 +117,16 @@ button.block-button.outline:hover {
   text-align: center;
   border: 1px solid #ccc;
   color: #666;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.empty-state.error {
+  width: 100%;
+  text-align: center;
+  border: 1px solid #c92727;
+  color: #c92727;
   padding: 0.75rem 1rem;
   border-radius: 4px;
   font-size: 1rem;

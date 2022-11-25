@@ -12,16 +12,16 @@ function Post(props) {
   const [json, setJson] = useState(null)
 
   const [data, setData] = useState({
-    cid: "",
-    mode: "",
+    cid: "7DELIVERY",
+    mode: "submit",
     member_id: "",
     storeid: "",
     posid: "",
     inv: "",
     saledate: "",
     products: [],
-    mstamp: "",
-    isApplyAccum: "",
+    mstamp: "true",
+    isApplyAccum: "true",
     coupon: [],
     tender: {
       tenderno: "",
@@ -144,34 +144,45 @@ function Post(props) {
   };
 
   // SUBMIT & CLEAR
+  const [empty, setEmpty] = useState([])
   function submit(e) {
     e.preventDefault();
+    const tmpEmpty = [];
     const temp = { ...data };
-    temp.posid = parseInt(temp.posid);
-    temp.inv = parseInt(temp.inv);
-    productArray.forEach((item) => {
-      item.quantity = parseInt(item.quantity);
-    });
-    temp.products = productArray;
-    temp.mstamp = temp.mstamp === "true";
-    temp.isApplyAccum = temp.isApplyAccum === "true";
-    temp.redeems = temp.redeems.id ? temp.redeems : [];
-    temp.saledate = temp.saledate.concat(" 00:00:00");
-    console.log('temp', temp)
-    Axios.post(url, temp).then((res) => {
-      console.log(res.data);
-      setJson(res.data)
-    });
-    // console.log(temp);
-    // console.log(productArray);
+    console.log(temp.products.length)
+    if (!temp.member_id) tmpEmpty.push('member_id');
+    if (!temp.storeid) tmpEmpty.push('storeid');
+    if (!temp.posid) tmpEmpty.push('posid');
+    if (!temp.inv) tmpEmpty.push('inv');
+    if (!temp.saledate) tmpEmpty.push('saledate');
+    if (productArray.length === 0) tmpEmpty.push('products');
+    if (!temp.tender.tenderno || !temp.tender.amount) tmpEmpty.push('tender');
+    if (!temp.redeems.id || !temp.redeems.earn) tmpEmpty.push('redeems');
+
+    console.log(tmpEmpty)
+    setEmpty(tmpEmpty)
+    if (tmpEmpty.length === 0) {
+      temp.posid = parseInt(temp.posid);
+      temp.inv = parseInt(temp.inv);
+      productArray.forEach((item) => {
+        item.quantity = parseInt(item.quantity);
+      });
+      temp.products = productArray;
+      temp.mstamp = temp.mstamp === "true";
+      temp.isApplyAccum = temp.isApplyAccum === "true";
+      temp.redeems = temp.redeems.id ? temp.redeems : [];
+      temp.saledate = temp.saledate.concat(" 00:00:00");
+      console.log('temp', temp)
+      Axios.post(url, temp).then((res) => {
+        console.log(res.data);
+        setJson(res.data)
+      });
+    }
   }
 
   // COPY HANDLER
 
 function copyHandler() {
-  // var copyText = JSON.stringify(json);
-  // copyText.select();
-  // copyText.setSelectionRange(0, 99999);
   navigator.clipboard.writeText(JSON.stringify(json));
   alert("Copied to your clipboard!")
 }
@@ -179,16 +190,16 @@ function copyHandler() {
   function reset() {
     setJson(null)
     setData({
-      cid: "",
-      mode: "",
+      cid: "7DELIVERY",
+      mode: "submit",
       member_id: "",
       storeid: "",
       posid: "",
       inv: "",
       saledate: "",
       products: [],
-      mstamp: "",
-      isApplyAccum: "",
+      mstamp: "true",
+      isApplyAccum: "true",
       coupon: [],
       tender: {
         tenderno: "",
@@ -224,7 +235,7 @@ function copyHandler() {
           ) :
           (
             <form onSubmit={(e) => submit(e)}>
-          <p className="header">CID</p>
+          <p>CID</p>
           <Dropdown
             options={cidOptions}
             onChange={(e) => {
@@ -237,7 +248,7 @@ function copyHandler() {
             type="text"
           />
 
-          <p className="header">Mode</p>
+          <p>Mode</p>
           <Dropdown
             options={[
               { value: "submit", label: "Submit" },
@@ -255,54 +266,63 @@ function copyHandler() {
             placeholder={"Select an Option"}
             type="text"
           />
-
-          <p className="header">Member ID</p>
+          <p className={` header ${empty.includes('member_id') ? "error" : ""}`}>Member ID</p>
           <input
             onChange={(e) => handle(e.target)}
             id="member_id"
             value={data.member_id}
             placeholder="Member ID"
             type="text"
-          />
+            className={`${empty.includes('member_id') ? "error" : ""}`}
+            />
+          <p className={` warning ${empty.includes('member_id') ? "error" : ""}`}>Member ID is required</p>
 
-          <p className="header">Store ID</p>
+          <p className={` header ${empty.includes('storeid') ? "error" : ""}`}>Store ID</p>
           <input
             onChange={(e) => handle(e.target)}
             id="storeid"
             value={data.storeid}
             placeholder="Store ID"
             type="text"
+            className={`${empty.includes('storeid') ? "error" : ""}`}
           />
+          <p className={` warning ${empty.includes('storeid') ? "error" : ""}`}>Store ID is required</p>
 
-          <p className="header">POS ID</p>
+          <p className={` header ${empty.includes('posid') ? "error" : ""}`}>POS ID</p>
           <input
             onChange={(e) => handle(e.target)}
             id="posid"
             value={data.posid}
             placeholder="POS ID"
             type="text"
+            className={`${empty.includes('posid') ? "error" : ""}`}
           />
+          <p className={` warning ${empty.includes('posid') ? "error" : ""}`}>POS ID is required</p>
 
-          <p className="header">Invoice No.</p>
+          <p className={` header ${empty.includes('inv') ? "error" : ""}`}>Invoice No.</p>
           <input
             onChange={(e) => handle(e.target)}
             id="inv"
             value={data.inv}
             placeholder="Invoice No."
             type="text"
+            className={`${empty.includes('inv') ? "error" : ""}`}
           />
+          <p className={` warning ${empty.includes('inv') ? "error" : ""}`}>Invoice No. is required</p>
 
-          <p className="header">Sale Date</p>
+          <p className={` header ${empty.includes('saledate') ? "error" : ""}`}>Sale Date</p>
           <input
             onChange={(e) => handle(e.target)}
             id="saledate"
             value={data.saledate}
             placeholder="Sale Date (yyyy-mm-dd)"
             type="text"
+            className={`${empty.includes('saledate') ? "error" : ""}`}
           />
+          <p className={` warning ${empty.includes('saledate') ? "error" : ""}`}>Sale Date is required</p>
 
           <div className="product-list">
-            <p className="header">Products List</p>
+            <p className={` header ${empty.includes('products') ? "error" : ""}`}>Products List</p>
             <div className='button' onClick={() => productAddHandler()}>Add a product</div>
           </div>
           {
@@ -328,11 +348,14 @@ function copyHandler() {
                 </div>
               );
             }) :
-            <div className='empty-state' onClick={() => productAddHandler()}
-            >There is no product yet, please add more.</div>
+            <>
+              <div className={`empty-state ${empty.includes('products') ? "error" : ""}`} onClick={() => productAddHandler()}
+              >There is no product yet, please add more.</div>
+              <p className={` warning ${empty.includes('products') ? "error" : ""}`}>Products are required</p>
+            </>
           }
 
-          <p className="header">M Stamp</p>
+          <p>M Stamp</p>
           <Dropdown
             options={[
               { value: "true", label: "true" },
@@ -351,7 +374,7 @@ function copyHandler() {
             type="text"
           />
 
-          <p className="header">Is Apply Accum</p>
+          <p>Is Apply Accum</p>
           <Dropdown
             options={[
               { value: "true", label: "true" },
@@ -371,7 +394,7 @@ function copyHandler() {
           />
 
           <div className="product-list">
-            <p className="header">Coupon List</p>
+            <p className={` header ${empty.includes('coupons') ? "error" : ""}`}>Coupon List</p>
             <div className='button' onClick={() => couponAddHandler()}>Add a Coupon</div>
           </div>
           {
@@ -398,10 +421,10 @@ function copyHandler() {
                   );
                 }) :
                 <div className='empty-state' onClick={() => couponAddHandler()}
-                >There is no coupon yet, please add more.</div>
+                >There is no coupon yet.</div>
           }
 
-          <p className="header">Tender</p>
+          <p className={` header ${empty.includes('tender') ? "error" : ""}`}>Tender</p>
           <div  style={{display: "flex", gap: "8px"}}>
             <input
               onChange={(e) => handle(e.target)}
@@ -409,6 +432,7 @@ function copyHandler() {
               value={data.tender.tenderno}
               placeholder="Tender No."
               type="text"
+              className={`${empty.includes('tender') ? "error" : ""}`}
               />
             <input
               onChange={(e) => handle(e.target)}
@@ -416,10 +440,12 @@ function copyHandler() {
               value={data.tender.amount}
               placeholder="Amount"
               type="text"
+              className={`${empty.includes('tender') ? "error" : ""}`}
               />
             </div>
+            <p className={` warning ${empty.includes('tender') ? "error" : ""}`}>Tender is required</p>
 
-          <p className="header">Redeems</p>
+          <p className={` header ${empty.includes('redeems') ? "error" : ""}`}>Redeems</p>
           <div  style={{display: "flex", gap: "8px"}}>
             <input
               onChange={(e) => handle(e.target)}
@@ -427,6 +453,7 @@ function copyHandler() {
               value={data.redeems.id}
               placeholder="Redeem ID"
               type="text"
+              className={`${empty.includes('redeems') ? "error" : ""}`}
             />
             <input
               onChange={(e) => handle(e.target)}
@@ -434,8 +461,10 @@ function copyHandler() {
               value={data.redeems.earn}
               placeholder="Redeem Earn"
               type="text"
+              className={`${empty.includes('redeems') ? "error" : ""}`}
             />
           </div>
+          <p className={` warning ${empty.includes('redeems') ? "error" : ""}`}>Redeems are required</p>
 
           <button className='block-button' style={{marginTop: '1.5rem', marginBottom: '1rem'}}>Generate</button>
         </form>
