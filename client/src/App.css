@@ -50,12 +50,22 @@ button.block-button {
   font-weight: 600;
   font-size: 1.25rem;
   color: white;
-  margin: 1rem 0;
   border-radius: 0.25rem;
   text-align: center;
   cursor: pointer;
   background-color: #c92727;
 }
+button.block-button.outline {
+  border: 1px solid #c92727;
+  color: #c92727;
+  text-align: center;
+  cursor: pointer;
+  background-color: white;
+}
+button.block-button.outline:hover {
+  background-color: #c9272729;
+}
+
 .close-button {
   min-width: 37px;
   height: 37px;
@@ -76,6 +86,12 @@ button.block-button {
   top: 50%;
   left: 50%; */
 
+}
+
+.json-formatted {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
 }
 
 .empty-state {
