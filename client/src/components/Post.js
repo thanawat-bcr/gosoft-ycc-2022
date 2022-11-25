@@ -184,7 +184,6 @@ function Post(props) {
 
 function copyHandler() {
   navigator.clipboard.writeText(JSON.stringify(json));
-  alert("Copied to your clipboard!")
 }
 
   function reset() {
